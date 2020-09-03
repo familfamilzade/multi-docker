@@ -5,9 +5,6 @@ services:
 before_install:
     - docker build -t ffamilzade/client-test -f ./client/Dockerfile.dev ./client
 
-script:
-    - docker run -e CI=true ffamilzade/client-test npm run test
-
 after_success:
     - docker build -t ffamilzade/client ./client
     - docker build -t ffamilzade/nginx ./nginx
