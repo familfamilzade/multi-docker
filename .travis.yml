@@ -1,0 +1,21 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t ffamilzade/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true ffamilzade/client-test npm test
+
+after_success:
+    - docker build -t ffamilzade/client ./client
+    - docker build -t ffamilzade/nginx ./nginx
+    - docker build -t ffamilzade/server ./server
+    - docker build -t ffamilzade/worker ./worker
+    
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker push ffamilzade/client
+    - docker push ffamilzade/nginx
+    - docker push ffamilzade/server
+    - docker push ffamilzade/worker
